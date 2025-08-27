@@ -8,26 +8,29 @@ import (
 )
 
 func TestGenerateRandomElements(t *testing.T) {
-	t.Run("size zero returns empty slice", func(t *testing.T) {
-		got := generateRandomElements(0)
-		require.NotNil(t, got)
-		assert.Equal(t, 0, len(got))
-	})
+	tests := []struct {
+		name           string
+		size           int
+		wantLen        int
+		checkPositive  bool
+	}{
+		{name: "size zero returns empty slice", size: 0, wantLen: 0, checkPositive: false},
+		{name: "negative size returns empty slice", size: -5, wantLen: 0, checkPositive: false},
+		{name: "size N returns slice of N positive ints", size: 100, wantLen: 100, checkPositive: true},
+	}
 
-	t.Run("negative size returns empty slice", func(t *testing.T) {
-		got := generateRandomElements(-5)
-		require.NotNil(t, got)
-		assert.Equal(t, 0, len(got))
-	})
-
-	t.Run("size N returns slice of N positive ints", func(t *testing.T) {
-		const n = 100
-		got := generateRandomElements(n)
-		require.Equal(t, n, len(got))
-		for i, v := range got {
-			assert.Greater(t, v, 0, "index=%d", i)
-		}
-	})
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := generateRandomElements(tt.size)
+			require.NotNil(t, got)
+			require.Equal(t, tt.wantLen, len(got))
+			if tt.checkPositive {
+				for i, v := range got {
+					assert.Greater(t, v, 0, "index=%d", i)
+				}
+			}
+		})
+	}
 }
 
 func TestMaximum(t *testing.T) {
