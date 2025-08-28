@@ -34,7 +34,7 @@ func maximum(data []int) int {
 	}
 
 	maxVal := data[0]
-	//for i := 1; i < len(data); i++ {
+
 	for _, v := range data {
 		if v > maxVal {
 			maxVal = v
@@ -71,27 +71,11 @@ func maxChunks(data []int) int {
 			end = len(data) // include remainder in the last chunk
 		}
 
-		if start > len(data) {
-			start = len(data)
-		}
-
-		if end > len(data) {
-			end = len(data)
-		}
-
-		//idx := i
-		var mu sync.Mutex
 		segment := data[start:end]
-
+		idx := i
 		go func() {
 			defer wg.Done()
-			segmentMax := maximum(segment)
-
-			mu.Lock()
-			maxima = append(maxima, segmentMax)
-			mu.Unlock()
-
-			//maxima[idx] = maximum(segment)
+			maxima[idx] = maximum(segment)
 
 		}()
 	}
@@ -120,5 +104,5 @@ func main() {
 	max = maxChunks(data)
 	elapsed = time.Since(start).Microseconds()
 
-	fmt.Printf("Максимальное значение элемента: %d\nВремя поиска: %d mss\n", max, elapsed)
+	fmt.Printf("Максимальное значение элемента: %d\nВремя поиска: %d ms\n", max, elapsed)
 }

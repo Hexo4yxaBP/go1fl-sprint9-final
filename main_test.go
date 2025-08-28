@@ -9,26 +9,26 @@ import (
 )
 
 func TestGenerateRandomElements(t *testing.T) {
-	t.Run("size zero returns empty slice", func(t *testing.T) {
-		got := generateRandomElements(0)
-		require.NotNil(t, got)
-		assert.Equal(t, 0, len(got))
-	})
 
-	t.Run("negative size returns empty slice", func(t *testing.T) {
-		got := generateRandomElements(-5)
-		require.NotNil(t, got)
-		assert.Equal(t, 0, len(got))
-	})
+	cases := []struct {
+		testDescription string
+		input           int
+		expected        int
+	}{{"size zero returns empty slice", 0, 0},
+		{"negative size returns empty slice", -5, 0},
+		{"size N returns slice of N positive ints", 100, 100},
+	}
 
-	t.Run("size N returns slice of N positive ints", func(t *testing.T) {
-		const n = 100
-		got := generateRandomElements(n)
-		require.Equal(t, n, len(got))
-		for i, v := range got {
-			assert.Greater(t, v, 0, "index=%d", i)
-		}
-	})
+	for _, tc := range cases {
+		t.Run(tc.testDescription, func(t *testing.T) {
+			got := generateRandomElements(tc.input)
+			require.NotNil(t, got)
+			assert.Equal(t, tc.expected, len(got))
+			for i, v := range got {
+				assert.Greater(t, v, 0, "index=%d", i)
+			}
+		})
+	}
 }
 
 func TestMaximum(t *testing.T) {
